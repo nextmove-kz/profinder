@@ -241,7 +241,6 @@ const ResumeForm = () => {
                     <rect width="20" height="14" x="2" y="6" rx="2" />
                   </svg>
                 </h2>
-                {/* // <ExperienceForm /> */}
                 {/* {jobs.length > 0 ? (
                   jobs.map((job, index) => (
                     <div key={job}>
