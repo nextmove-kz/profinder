@@ -21,8 +21,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Lint code
-        run: npm run lint
+      - name: Build code
+        run: npm run build
           
       - name: Deploy to Netlify
         env:
