@@ -1,4 +1,4 @@
-name: PR Checks Netlify
+name: Create Netlify preview URL on pull request
 
 on:
   pull_request:
@@ -6,28 +6,32 @@ on:
       - main
 
 jobs:
-  build:
+  build_and_deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '21'
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build code
-        run: npm run build
-          
       - name: Deploy to Netlify
+        id: netlify-deploy
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         run: |
-          npm install -g netlify-cli
-          netlify deploy --prod --dir=build/
+          netlify deploy --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN --dir=build --json > deploy-info.json
+          cat deploy-info.json | jq -r '.deploy_url'
+
+      - name: Output preview URL
+        id: preview-url
+        run: |
+          PREVIEW_URL=$(cat deploy-info.json | jq -r '.deploy_url')
+          echo "Preview URL: $PREVIEW_URL"
+          echo "::set-output name=preview-url::$PREVIEW_URL"
