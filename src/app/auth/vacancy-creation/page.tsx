@@ -59,33 +59,6 @@ const VacancyForm = () => {
     setSkills(skills.filter((_, i) => i !== index));
   };
 
-  // const handleRemoveJob = (index: number) => {
-  //   setJobs(jobs.filter((_, i) => i !== index));
-  // };
-
-  // const handleAddJob = () => {
-  //   if (jobInput !== undefined && jobs.length < 4) {
-  //     const newJob = { id: nanoid(), value: jobInput };
-  //     setJobs([...jobs, newJob]);
-  //     setJobInput(jobInput + 1);
-  //   }
-  // };
-
-  // const handleRemoveJob = (id: string) => {
-  //   setJobs(jobs.filter((job) => job.id !== id));
-  // };
-
-  // const handleAddJob = () => {
-  //   if (jobInput !== undefined && jobs.length < 4) {
-  //     const newJob = { id: nanoid(), value: jobInput };
-  //     setJobs([...jobs, newJob]);
-  //     setJobInput(jobInput + 1);
-  //   }
-  // };
-
-  // const handleRemoveJob = (id: string) => {
-  //   setJobs(jobs.filter((job) => job.id !== id));
-  // };
   return (
     <div className="mx-auto p-6 bg-gray-100 min-h-screen">
       <form
