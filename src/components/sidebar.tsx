@@ -77,7 +77,7 @@ const Sidebar: React.FC = () => {
             </li>
             <li>
               <Link
-                href="/vacancy"
+                href="/vacancy/1"
                 className="flex items-center gap-1 hover:text-gray-300"
               >
                 <svg
