@@ -77,7 +77,7 @@ const Sidebar: React.FC = () => {
             </li>
             <li>
               <Link
-                href="/"
+                href="/vacancy"
                 className="flex items-center gap-1 hover:text-gray-300"
               >
                 <svg
@@ -100,7 +100,7 @@ const Sidebar: React.FC = () => {
                   <path d="M9.5 12H16" />
                   <path d="M9.5 16H14" />
                 </svg>
-                Vacansy
+                Vacancy
               </Link>
             </li>
           </ul>
