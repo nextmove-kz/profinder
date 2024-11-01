@@ -118,6 +118,44 @@ export const resumeCreationSchema = z.object({
 
 export type ResumeCreationSchema = z.infer<typeof resumeCreationSchema>;
 
+export const vacancyCreationSchema = z.object({
+  title: z.string().nonempty({ message: "Title is required!" }).max(100, "Title should be at most 100 characters"),
+  workExperience: z.enum(
+    ["none", "1-3", "3-6", "6+"],
+    {
+      errorMap: () => ({ message: "Please select a valid work experience" }),
+    }
+  ),
+    skills: z.array(z.string()).optional().default([]),
+    minimalSalary: z.preprocess((value) => Number(value), z
+      .number({ invalid_type_error: "Salary must be a number" })
+      .positive({ message: "Salary must be a positive number" })
+    ),
+    maxSalary: z.preprocess((value) => Number(value), z
+    .number({ invalid_type_error: "Salary must be a number" })
+    .positive({ message: "Salary must be a positive number" })
+  ),
+    typeOfEmployment: z.enum(
+      ["Full-time", "Part-time", "Freelance", "Contract"],
+      {
+        errorMap: () => ({ message: "Please select a valid type of employment" }),
+      }
+    ),
+    remote: z.enum(["true", "false"], {
+      errorMap: () => ({ message: "Specify if the job is remote or not" }),
+    }),
+    email: z
+    .string()
+    .nonempty("Email is required")
+    .email("Invalid email format"),
+    description: z
+    .string()
+    .nonempty("Description is required")
+    .max(500, "Description should be at most 500 characters"),
+});
+
+export type VacancyCreationSchema = z.infer<typeof vacancyCreationSchema>;
+
 export const experienceSchema = z.object({
   workExperience: z
     .array(
