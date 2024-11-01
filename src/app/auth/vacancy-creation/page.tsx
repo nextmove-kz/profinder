@@ -16,6 +16,7 @@ import {
   VacancyCreationSchema,
 } from "@/lib/formValidationSchemas";
 import { Toggle } from "@/components/ui/toggle";
+import { createVacancy } from "@/api/vacancy";
 
 const VacancyForm = () => {
   const {
@@ -32,9 +33,14 @@ const VacancyForm = () => {
   const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState<string>("");
 
-  const onSubmit = (data: VacancyCreationSchema) => {
-    console.log("submiting data");
-    console.log(data);
+  const onSubmit = async (data: VacancyCreationSchema) => {
+    try {
+      console.log("submiting data", data);
+      const vacancy = await createVacancy(data);
+      console.log("sucess", vacancy);
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   const handleAddOption = () => {
@@ -112,21 +118,39 @@ const VacancyForm = () => {
                     <Label>Title</Label>
                     <input
                       type="text"
+                      {...register("title")}
                       className="ring-[1px] ring-gray-300 p-2 rounded-md text-sm w-full"
                       placeholder="mcDonalds employee"
                     />
+                    {errors.title?.message && (
+                      <p className="text-xs text-red-400">
+                        {errors.title.message.toString()}
+                      </p>
+                    )}
                     <Label>Minimal Salary</Label>
                     <input
                       type="number"
+                      {...register("minimalSalary")}
                       className="ring-[1px] ring-gray-300 p-2 rounded-md text-sm w-full"
                       placeholder="Min Salary"
                     />
+                    {errors.minimalSalary?.message && (
+                      <p className="text-xs text-red-400">
+                        {errors.minimalSalary.message.toString()}
+                      </p>
+                    )}
                     <Label>Max Salary</Label>
                     <input
                       type="number"
+                      {...register("maxSalary")}
                       className="ring-[1px] ring-gray-300 p-2 rounded-md text-sm w-full"
                       placeholder="Max Salary"
                     />
+                    {errors.maxSalary?.message && (
+                      <p className="text-xs text-red-400">
+                        {errors.maxSalary.message.toString()}
+                      </p>
+                    )}
                     <Label>Work Experience</Label>
                     <select
                       className="ring-[1px] ring-gray-300 p-2 rounded-md text-sm w-full"
@@ -173,6 +197,7 @@ const VacancyForm = () => {
                     <Label>Leave an email to contact with</Label>
                     <input
                       type="text"
+                      {...register("email")}
                       className="ring-[1px] ring-gray-300 p-2 rounded-md text-sm w-full"
                       placeholder="Email"
                     />

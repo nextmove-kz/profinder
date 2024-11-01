@@ -34,8 +34,31 @@ const Sidebar: React.FC = () => {
           <ul className="space-y-4">
             <li>
               <Link
+                href={"/choose"}
+                className="flex items-center gap-1 hover:text-gray-300"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect width="7" height="18" x="3" y="3" rx="1" />
+                  <rect width="7" height="7" x="14" y="3" rx="1" />
+                  <rect width="7" height="7" x="14" y="14" rx="1" />
+                </svg>
+                App
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/"
-                className="flex  gap-1 items-center hover:text-gray-300"
+                className="flex gap-1 items-center hover:text-gray-300"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

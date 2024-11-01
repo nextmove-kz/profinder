@@ -63,3 +63,37 @@ export const vacancyById = async (id: string) =>
   await pocketbase
     .collection("vacancy")
     .getOne(id, { expand: "", cache: "no-cache" });
+
+
+export const createVacancy = async (data: any) => {
+
+  try {
+    const vacancy = await pocketbase.collection("vacancy").create(data);
+    return vacancy;
+  } catch (error) {
+    console.log("error", error);
+    throw error;
+  }
+};
+
+export const updateVacancy = async (id: string, data: any) => {
+  const vacancy = await pocketbase.collection("vacancy").update(id, data);
+  return vacancy;
+};
+
+export const deleteVacancy = async (id: string) => {
+  const vacancy = await pocketbase.collection("vacancy").delete(id);
+  return vacancy;
+};
+
+export const getVacancyById = async (id: string) => {
+  try {
+    const vacancy = await pocketbase.collection("vacancy").getOne(id, {
+      expand: "company",
+    });
+    return vacancy;
+  } catch (error) {
+    console.log("error", error);
+    throw error;
+  }
+};

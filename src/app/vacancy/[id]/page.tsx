@@ -1,34 +1,39 @@
+"use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { GoTriangleLeft, GoTriangleRight } from "react-icons/go";
 import AboutDialog from "@/components/AboutDialog";
+import { getVacancyById } from "@/api/vacancy";
+import { useRouter } from "next/router";
+import { useParams } from "next/navigation";
+import { format } from "path";
 
-const data = {
-  title: "Full Stack Developer",
-  description: "Build web applications using Remix.",
-  experience: "1-3 years",
-  skills: "JavaScript, React, Remix",
-  min_salary: "50,000",
-  max_salary: "80,000",
-  active: true,
-  city: "Albuquerqueo",
-  email: "example@mail.com",
-  remote: false,
-  employment_type: "Full-time",
-  company: {
-    name: "Tech Company",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius explicabo nisi, corporis accusamus perspiciatis reprehenderit cumque libero iste delectus adipisci facere quibusdam. Sit alias itaque similique laborum voluptatem, corrupti numquam?",
-    website: "https://profinder-hack.netlify.app/",
-    email: "example@mail.com",
-    phone: "1234567890",
-    img: "/placeholder-user_2.jpg",
-  },
-};
+// const data = {
+//   title: "Full Stack Developer",
+//   description: "Build web applications using Remix.",
+//   experience: "1-3 years",
+//   skills: "JavaScript, React, Remix",
+//   min_salary: "50,000",
+//   max_salary: "80,000",
+//   active: true,
+//   city: "Albuquerqueo",
+//   email: "example@mail.com",
+//   remote: false,
+//   employment_type: "Full-time",
+//   company: {
+//     name: "Tech Company",
+//     description:
+//       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius explicabo nisi, corporis accusamus perspiciatis reprehenderit cumque libero iste delectus adipisci facere quibusdam. Sit alias itaque similique laborum voluptatem, corrupti numquam?",
+//     website: "https://profinder-hack.netlify.app/",
+//     email: "example@mail.com",
+//     phone: "1234567890",
+//     img: "/placeholder-user_2.jpg",
+//   },
+// };
 // const data = {
 //   fullName: "John Doe",
 //   age: 25,
@@ -55,7 +60,71 @@ const data = {
 //   suitable: 123,
 // };
 
+interface Vacancy {
+  title: string;
+  description: string;
+  experience: string;
+  skills: string;
+  min_salary: number;
+  max_salary: number;
+  active: boolean;
+  city: string;
+  email: string;
+  remote: boolean;
+  employment_type: string;
+  company: {
+    name: string;
+    description: string;
+    website: string;
+    email: string;
+    phone: string;
+    img: string;
+  };
+}
+
 const vacancyPage = () => {
+  const id = useParams<{ id: string }>().id;
+  const [data, setData] = useState<Vacancy>();
+
+  useEffect(() => {
+    if (!id) return;
+    const fetchVacancy = async () => {
+      try {
+        console.log("Fetching vacancy data:", id);
+        const fetchedData = await getVacancyById(id as string);
+        console.log("Vacancy data:", fetchedData);
+
+        // Применение функции форматирования данных
+        const formattedData = (vacancy: any): Vacancy => ({
+          title: vacancy.title,
+          description: vacancy.description,
+          experience: vacancy.experience,
+          skills: vacancy.skills,
+          min_salary: vacancy.min_salary,
+          max_salary: vacancy.max_salary,
+          active: vacancy.active,
+          city: vacancy.city,
+          email: vacancy.email,
+          remote: vacancy.remote,
+          employment_type: vacancy.employment_type,
+          company: {
+            name: vacancy.company.name,
+            description: vacancy.company.description,
+            website: vacancy.company.website,
+            email: vacancy.company.email,
+            phone: vacancy.company.phone,
+            img: vacancy.company.img,
+          },
+        });
+
+        setData(formattedData(fetchedData));
+      } catch (error) {
+        console.error("Failed to fetch vacancy:", error);
+      }
+    };
+
+    fetchVacancy();
+  }, [id]);
   return (
     <div className="mx-auto p-6 bg-gray-100 min-h-screen">
       <div className="rounded-xl">
@@ -82,25 +151,25 @@ const vacancyPage = () => {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="34"
-                color="white"
                 height="34"
                 viewBox="0 0 24 24"
                 fill="none"
+                color="white"
                 stroke="currentColor"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 className="absolute top-4 right-4"
               >
+                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
                 <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-                <path d="M15 18a3 3 0 1 0-6 0" />
-                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z" />
-                <circle cx="12" cy="13" r="2" />
+                <circle cx="11.5" cy="14.5" r="2.5" />
+                <path d="M13.3 16.3 15 18" />
               </svg>
               <div className="pl-5 flex items-center space-x-4 p-2 ml-2 mb-0 pb-0">
                 <div>
                   <Image
-                    src={data.company.img}
+                    src={data?.company.img || "/placeholder-user_2.jpg"}
                     alt="Profile picture"
                     width={200}
                     height={200}
@@ -128,10 +197,12 @@ const vacancyPage = () => {
                       <path d="M8 18h1" />
                       <path d="M21.378 12.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" />
                     </svg>
-                    <p className="text-2xl text-white font-semibold">{` ${data.company.name}`}</p>
+                    <p className="text-2xl text-white font-semibold">{` ${
+                      data && data.company.name
+                    }`}</p>
                     <AboutDialog
                       label="About us"
-                      text={data.company.description}
+                      text={data?.company.description || ""}
                     />
                   </div>
                   <div className="border-t-2 border-white p-5">
@@ -146,23 +217,26 @@ const vacancyPage = () => {
                       <p className="text-white text-base font-semibold">
                         {"City: "}
                       </p>
-                      <p className="text-white text-base ml-2">{data.city}</p>
+                      <p className="text-white text-base ml-2">
+                        {data?.city && data.city}
+                      </p>
                     </div>
-                    {data.company.website && (
-                      <div className="flex">
-                        <p className="text-white text-base font-semibold">
-                          {"Our website: "}
-                        </p>
-                        <a
-                          href={data.company.website}
-                          target="_blank"
-                          className="text-white text-base ml-2 hover:underline"
-                        >
-                          {data.company.website}
-                        </a>
-                      </div>
-                    )}
-                    {data.company.email && data.company.phone && (
+                    {data?.company.website &&
+                      data?.company.website.length > 0 && (
+                        <div className="flex">
+                          <p className="text-white text-base font-semibold">
+                            {"Our website: "}
+                          </p>
+                          <a
+                            href={data.company.website}
+                            target="_blank"
+                            className="text-white text-base ml-2 hover:underline"
+                          >
+                            {data.company.website}
+                          </a>
+                        </div>
+                      )}
+                    {data?.company.email && data?.company.phone && (
                       <div className="flex">
                         <p className="text-white text-base">{`${data.company.email}, ${data.company.phone}`}</p>
                       </div>
@@ -204,32 +278,32 @@ const vacancyPage = () => {
               <Card className="mb-4">
                 <CardContent className="flex flex-col p-4">
                   <h3 className="text-lg font-semibold mb-2 flex gap-2">
-                    {data.title}{" "}
-                    {data.active ? (
+                    {data?.title}{" "}
+                    {data?.active ? (
                       <Badge className="bg-orange-500">Active</Badge>
                     ) : (
                       <Badge>Inactive</Badge>
                     )}
                   </h3>
                   <p className="text-gray-500">
-                    from <span className="text-black">{data.min_salary}</span>{" "}
-                    to <span className="text-black">{data.max_salary}</span> per
-                    month
+                    from <span className="text-black">{data?.min_salary}</span>{" "}
+                    to <span className="text-black">{data?.max_salary}</span>{" "}
+                    per month
                   </p>
                   <p className="text-gray-500">
                     Required experience:{" "}
-                    <span className="text-black">{data.experience}</span>
+                    <span className="text-black">{data?.experience}</span>
                   </p>
                   <p className="text-gray-500">
-                    Skills: <span className="text-black">{data.skills}</span>
+                    Skills: <span className="text-black">{data?.skills}</span>
                   </p>
                   <p className="text-gray-500">
                     Type of employment:{" "}
-                    <span className="text-black">{data.employment_type}</span>
+                    <span className="text-black">{data?.employment_type}</span>
                   </p>
                   <p className="text-gray-500 flex">
                     Remote:{" "}
-                    {data.remote ? (
+                    {data?.remote ? (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -275,7 +349,7 @@ const vacancyPage = () => {
                   </h3>
                   <Card>
                     <CardContent className="flex flex-col p-4 justify-center">
-                      {data.description}
+                      {data?.description}
                     </CardContent>
                   </Card>
                 </CardContent>
@@ -305,7 +379,7 @@ const vacancyPage = () => {
               <Card className="mb-4">
                 <CardContent className="flex flex-col gap-2 p-4">
                   <Label className="text-gray-500">Email</Label>
-                  <p>{data.email}</p>
+                  <p>{data?.email}</p>
                 </CardContent>
               </Card>
             </section>
