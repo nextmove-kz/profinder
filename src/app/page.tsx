@@ -77,7 +77,7 @@ export default function Home() {
               </button>
             </Link>
           </div>
-          <Image src="/painted_arrow.png" alt="arrow" width={60} height={60} />
+          <Image src="/painted_arrow.png" alt="arrow" width={80} height={80} />
         </div>
       </main>
     </div>
