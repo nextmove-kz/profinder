@@ -119,15 +119,22 @@ export const resumeCreationSchema = z.object({
 export type ResumeCreationSchema = z.infer<typeof resumeCreationSchema>;
 
 export const vacancyCreationSchema = z.object({
-  title: z.string().nonempty({ message: "Title is required!" }).max(100, "Title should be at most 100 characters"),
-  workExperience: z.enum(
+  title: z.string().nonempty({ message: "Title is required!" }).max(32, "Title should be at most 100 characters"),
+  city: z.string().max(100, "City should be at most 100 characters"),
+  experience: z.enum(
     ["none", "1-3", "3-6", "6+"],
     {
       errorMap: () => ({ message: "Please select a valid work experience" }),
     }
   ),
-    skills: z.array(z.string()).optional().default([]),
-    minimalSalary: z.preprocess((value) => Number(value), z
+  skills: z.string().max(210, "Skills should be at most 210 characters"),
+    // skills: z
+    // .string()
+    // .transform((val) => val.split(",").map((tag) => tag.trim()))
+    // .refine((arr) => arr.every((tag) => tag.length > 0), {
+    //   message: "skill cannot be empty",
+    // }),
+    minSalary: z.preprocess((value) => Number(value), z
       .number({ invalid_type_error: "Salary must be a number" })
       .positive({ message: "Salary must be a positive number" })
     ),
@@ -135,15 +142,14 @@ export const vacancyCreationSchema = z.object({
     .number({ invalid_type_error: "Salary must be a number" })
     .positive({ message: "Salary must be a positive number" })
   ),
-    typeOfEmployment: z.enum(
-      ["Full-time", "Part-time", "Freelance", "Contract"],
+  employmentType: z.enum(
+      ["full_time", "part_time", "project", "voluntary", "internship"],
       {
         errorMap: () => ({ message: "Please select a valid type of employment" }),
       }
     ),
-    remote: z.enum(["true", "false"], {
-      errorMap: () => ({ message: "Specify if the job is remote or not" }),
-    }),
+    remote: z.boolean(),
+    active: z.boolean().default(true),
     email: z
     .string()
     .nonempty("Email is required")
@@ -152,6 +158,7 @@ export const vacancyCreationSchema = z.object({
     .string()
     .nonempty("Description is required")
     .max(500, "Description should be at most 500 characters"),
+    compny: z.object({}).default({}),
 });
 
 export type VacancyCreationSchema = z.infer<typeof vacancyCreationSchema>;
@@ -188,3 +195,49 @@ export const experienceSchema = z.object({
 })
 
 export type experienceSchema = z.infer<typeof experienceSchema>;
+
+
+export const vacancySettingsSchema = z.object({
+  title: z.string().nonempty({ message: "Title is required!" }).max(32, "Title should be at most 100 characters"),
+  city: z.string().max(100, "City should be at most 100 characters"),
+  experience: z.enum(
+    ["none", "1-3", "3-6", "6+"],
+    {
+      errorMap: () => ({ message: "Please select a valid work experience" }),
+    }
+  ),
+  skills: z.string().max(210, "Skills should be at most 210 characters"),
+  //   // skills: z
+  //   // .string()
+  //   // .transform((val) => val.split(",").map((tag) => tag.trim()))
+  //   // .refine((arr) => arr.every((tag) => tag.length > 0), {
+  //   //   message: "skill cannot be empty",
+  //   // }),
+    minSalary: z.preprocess((value) => Number(value), z
+      .number({ invalid_type_error: "Salary must be a number" })
+      .positive({ message: "Salary must be a positive number" })
+    ),
+    maxSalary: z.preprocess((value) => Number(value), z
+    .number({ invalid_type_error: "Salary must be a number" })
+    .positive({ message: "Salary must be a positive number" })
+  ),
+  employmentType: z.enum(
+      ["full_time", "part_time", "project", "voluntary", "internship"],
+      {
+        errorMap: () => ({ message: "Please select a valid type of employment" }),
+      }
+    ),
+    remote: z.boolean(),
+    active: z.boolean().default(true),
+    email: z
+    .string()
+    .nonempty("Email is required")
+    .email("Invalid email format"),
+    description: z
+    .string()
+    .nonempty("Description is required")
+    .max(500, "Description should be at most 500 characters"),
+    // compny: z.object({}).default({}),
+});
+
+export type VacancySettingsSchema = z.infer<typeof vacancySettingsSchema>;

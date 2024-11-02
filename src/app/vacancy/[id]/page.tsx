@@ -94,26 +94,25 @@ const vacancyPage = () => {
         const fetchedData = await getVacancyById(id as string);
         console.log("Vacancy data:", fetchedData);
 
-        // Применение функции форматирования данных
         const formattedData = (vacancy: any): Vacancy => ({
           title: vacancy.title,
           description: vacancy.description,
           experience: vacancy.experience,
           skills: vacancy.skills,
-          min_salary: vacancy.min_salary,
-          max_salary: vacancy.max_salary,
+          min_salary: vacancy.minSalary,
+          max_salary: vacancy.maxSalary,
           active: vacancy.active,
           city: vacancy.city,
           email: vacancy.email,
           remote: vacancy.remote,
-          employment_type: vacancy.employment_type,
+          employment_type: vacancy.employmentType,
           company: {
-            name: vacancy.company.name,
-            description: vacancy.company.description,
-            website: vacancy.company.website,
-            email: vacancy.company.email,
-            phone: vacancy.company.phone,
-            img: vacancy.company.img,
+            name: vacancy.expand.company.name,
+            description: vacancy.expand.company.description,
+            website: vacancy.expand.company.website,
+            email: vacancy.expand.company.email,
+            phone: vacancy.expand.company.phone,
+            img: vacancy.expand.company.img,
           },
         });
 
@@ -169,7 +168,7 @@ const vacancyPage = () => {
               <div className="pl-5 flex items-center space-x-4 p-2 ml-2 mb-0 pb-0">
                 <div>
                   <Image
-                    src={data?.company.img || "/placeholder-user_2.jpg"}
+                    src={"/placeholder-user_2.jpg"}
                     alt="Profile picture"
                     width={200}
                     height={200}
@@ -348,7 +347,7 @@ const vacancyPage = () => {
                     Description:
                   </h3>
                   <Card>
-                    <CardContent className="flex flex-col p-4 justify-center">
+                    <CardContent className="flex flex-col p-4 justify-center break-words">
                       {data?.description}
                     </CardContent>
                   </Card>

@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { PlusCircle } from "lucide-react";
-import Image from "next/image";
 import {
   vacancyCreationSchema,
   VacancyCreationSchema,
@@ -27,26 +26,29 @@ const VacancyForm = () => {
     resolver: zodResolver(vacancyCreationSchema),
   });
 
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [options, setOptions] = useState<string[]>([]);
-  const [inputValue, setInputValue] = useState<string>("");
   const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState<string>("");
 
   const onSubmit = async (data: VacancyCreationSchema) => {
     try {
-      console.log("submiting data", data);
-      const vacancy = await createVacancy(data);
-      console.log("sucess", vacancy);
+      console.log("submitting data", data);
+      const vacancy = await createVacancy({
+        title: data.title,
+        city: data.city,
+        experience: data.experience,
+        skills: data.skills,
+        minSalary: data.minSalary,
+        maxSalary: data.maxSalary,
+        employmentType: data.employmentType,
+        remote: data.remote,
+        active: data.active,
+        email: data.email,
+        description: data.description,
+        company: {},
+      });
+      console.log("success", vacancy);
     } catch (error) {
       console.log("error", error);
-    }
-  };
-
-  const handleAddOption = () => {
-    if (inputValue.trim() && options.length < 3) {
-      setOptions([...options, inputValue]);
-      setInputValue("");
     }
   };
 
@@ -55,10 +57,6 @@ const VacancyForm = () => {
       setSkills([...skills, skillInput]);
       setSkillInput("");
     }
-  };
-
-  const handleRemoveOption = (index: number) => {
-    setOptions(options.filter((_, i) => i !== index));
   };
 
   const handleRemoveSkill = (index: number) => {
@@ -127,16 +125,28 @@ const VacancyForm = () => {
                         {errors.title.message.toString()}
                       </p>
                     )}
+                    <Label>City</Label>
+                    <input
+                      type="text"
+                      {...register("city")}
+                      className="ring-[1px] ring-gray-300 p-2 rounded-md text-sm w-full"
+                      placeholder="mcDonalds employee"
+                    />
+                    {errors.city?.message && (
+                      <p className="text-xs text-red-400">
+                        {errors.city.message.toString()}
+                      </p>
+                    )}
                     <Label>Minimal Salary</Label>
                     <input
                       type="number"
-                      {...register("minimalSalary")}
+                      {...register("minSalary")}
                       className="ring-[1px] ring-gray-300 p-2 rounded-md text-sm w-full"
                       placeholder="Min Salary"
                     />
-                    {errors.minimalSalary?.message && (
+                    {errors.minSalary?.message && (
                       <p className="text-xs text-red-400">
-                        {errors.minimalSalary.message.toString()}
+                        {errors.minSalary.message.toString()}
                       </p>
                     )}
                     <Label>Max Salary</Label>
@@ -154,41 +164,39 @@ const VacancyForm = () => {
                     <Label>Work Experience</Label>
                     <select
                       className="ring-[1px] ring-gray-300 p-2 rounded-md text-sm w-full"
-                      {...register("workExperience")}
+                      {...register("experience")}
                     >
                       <option value="none">none</option>
                       <option value="1-3">1-3 years</option>
                       <option value="3-6">3-6 years</option>
                       <option value="6+">6+ years</option>
                     </select>
-                    {errors.workExperience?.message && (
+                    {errors.experience?.message && (
                       <p className="text-xs text-red-400">
-                        {errors.workExperience.message.toString()}
+                        {errors.experience.message.toString()}
                       </p>
                     )}
                     <Label>Type of Employment</Label>
                     <select
                       className="ring-[1px] ring-gray-300 p-2 rounded-md text-sm w-full"
-                      {...register("typeOfEmployment")}
+                      {...register("employmentType")}
                     >
-                      <option value="Full-time">Full-time</option>
-                      <option value="Part-time">Part-time</option>
-                      <option value="Freelance">Freelance</option>
-                      <option value="Contract">Contract</option>
+                      <option value="full_time">Full-time</option>
+                      <option value="part_time">Part-time</option>
+                      <option value="project">Project</option>
+                      <option value="voluntary">Voluntary</option>
+                      <option value="internship">Internship</option>
                     </select>
-                    {errors.typeOfEmployment?.message && (
+                    {errors.employmentType?.message && (
                       <p className="text-xs text-red-400">
-                        {errors.typeOfEmployment.message.toString()}
+                        {errors.employmentType.message.toString()}
                       </p>
                     )}
                     <Label>Remote</Label>
-                    <select
-                      className="ring-[1px] ring-gray-300 p-2 rounded-md text-sm w-full"
-                      {...register("remote")}
-                    >
-                      <option value="true">remote</option>
-                      <option value="false">without remote</option>
-                    </select>
+                    <label className="switch">
+                      <input type="checkbox" {...register("remote")} />
+                      <span className="slider round"></span>
+                    </label>
                     {errors.remote?.message && (
                       <p className="text-xs text-red-400">
                         {errors.remote.message.toString()}
@@ -237,68 +245,17 @@ const VacancyForm = () => {
                     <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
                   </svg>
                 </h2>
-                <div>
-                  <div className="flex gap-1 relative">
-                    <Input
-                      type="text"
-                      value={skillInput}
-                      onChange={(e) => setSkillInput(e.target.value)}
-                      className="block w-full px-0 py-2 text-gray-900 placeholder-gray-500 bg-transparent border-0 border-b-2 border-gray-300 focus:ring-0 focus:border-orange-500 transition-colors duration-200"
-                      placeholder="Enter a skill"
-                      disabled={skills.length >= 16}
-                    />
-                  </div>
-                  <div className="flex flex-wrap w-full">
-                    {skills.length > 0 ? (
-                      skills.map((skill, index) => (
-                        <div
-                          key={skill + index}
-                          className="flex mt-2 w-1/6 mr-1"
-                        >
-                          <input
-                            type="text"
-                            {...register(`skills.${index}`, {
-                              required: true,
-                            })}
-                            defaultValue={skill}
-                            className="px-1 w-full text-sm font-medium rounded-full border-2 border-primary bg-primary text-primary-foreground placeholder-primary-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                            placeholder="Enter a skill"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveSkill(index)}
-                            className="text-gray-400 ml-0.5"
-                          >
-                            ✖
-                          </button>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-gray-400 p-2"></p>
-                    )}
-                  </div>
-
-                  {skills.length >= 16 && (
-                    <p className="text-xs text-red-400">
-                      Maximum 16 skills allowed
-                    </p>
-                  )}
-                  {errors.skills?.message && (
-                    <p className="text-xs text-red-400">
-                      {errors.skills.message.toString()}
-                    </p>
-                  )}
-                  <Button
-                    type="button"
-                    variant={"outline"}
-                    className="w-full mt-2"
-                    onClick={handleAddSkill}
-                    disabled={skills.length >= 16}
-                  >
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Add Another Skill
-                  </Button>
-                </div>
+                <Label>Skills</Label>
+                <textarea
+                  className="ring-[1px] ring-gray-300 p-2 rounded-md text-sm w-full"
+                  {...register("skills")}
+                  placeholder="Enter skills"
+                />
+                {errors.skills?.message && (
+                  <p className="text-xs text-red-400">
+                    {errors.skills.message.toString()}
+                  </p>
+                )}
               </section>
 
               <Button
