@@ -71,7 +71,9 @@ const AboutDialog = ({ label, text }: AboutDialogProps) => {
           </DialogDescription> */}
         </DialogHeader>
         <ScrollArea className="h-[200px] w-full rounded-md border p-4">
-          <p className="mt-2 leading-7">{text}</p>
+          <p className="mt-2 leading-7">
+            <div dangerouslySetInnerHTML={{ __html: text }} />
+          </p>
         </ScrollArea>
       </DialogContent>
     </Dialog>

@@ -241,6 +241,13 @@ const ResumeForm = () => {
                     <rect width="20" height="14" x="2" y="6" rx="2" />
                   </svg>
                 </h2>
+                <Label>Work Experience</Label>
+                <textarea
+                  className="ring-[1px] ring-gray-300 p-2 rounded-md text-sm w-full"
+                  placeholder="Enter your work experience..."
+                  {...register("workExperience")}
+                />
+
                 {/* {jobs.length > 0 ? (
                   jobs.map((job, index) => (
                     <div key={job}>
@@ -317,68 +324,17 @@ const ResumeForm = () => {
                     <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
                   </svg>
                 </h2>
-                <div>
-                  <div className="flex gap-1 relative">
-                    <Input
-                      type="text"
-                      value={skillInput}
-                      onChange={(e) => setSkillInput(e.target.value)}
-                      className="block w-full px-0 py-2 text-gray-900 placeholder-gray-500 bg-transparent border-0 border-b-2 border-gray-300 focus:ring-0 focus:border-orange-500 transition-colors duration-200"
-                      placeholder="Enter a skill"
-                      disabled={skills.length >= 16}
-                    />
-                  </div>
-                  <div className="flex flex-wrap w-full">
-                    {skills.length > 0 ? (
-                      skills.map((skill, index) => (
-                        <div
-                          key={skill + index}
-                          className="flex mt-2 w-1/6 mr-1"
-                        >
-                          <input
-                            type="text"
-                            {...register(`skills.${index}`, {
-                              required: true,
-                            })}
-                            defaultValue={skill}
-                            className="px-1 w-full text-sm font-medium rounded-full border-2 border-primary bg-primary text-primary-foreground placeholder-primary-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                            placeholder="Enter a skill"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveSkill(index)}
-                            className="text-gray-400 ml-0.5"
-                          >
-                            ✖
-                          </button>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-gray-400 p-2"></p>
-                    )}
-                  </div>
-
-                  {skills.length >= 16 && (
-                    <p className="text-xs text-red-400">
-                      Maximum 16 skills allowed
-                    </p>
-                  )}
-                  {errors.skills?.message && (
-                    <p className="text-xs text-red-400">
-                      {errors.skills.message.toString()}
-                    </p>
-                  )}
-                  <Button
-                    type="button"
-                    variant={"outline"}
-                    className="w-full mt-2"
-                    onClick={handleAddSkill}
-                    disabled={skills.length >= 16}
-                  >
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Add Another Skill
-                  </Button>
-                </div>
+                <Label>Skills</Label>
+                <textarea
+                  className="ring-[1px] ring-gray-300 p-2 rounded-md text-sm w-full"
+                  {...register("skills")}
+                  placeholder="Enter skills"
+                />
+                {errors.skills?.message && (
+                  <p className="text-xs text-red-400">
+                    {errors.skills.message.toString()}
+                  </p>
+                )}
               </section>
               <section className=" border-b-2 border-gray-300 p-5">
                 <h2 className="flex text-xl font-semibold mb-4 gap-2">
