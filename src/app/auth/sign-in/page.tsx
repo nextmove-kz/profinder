@@ -10,7 +10,7 @@ import Link from "next/link";
 import { Checkbox } from "@/components/ui/checkbox";
 import { signInSchema, SignInSchema } from "@/lib/formValidationSchemas";
 import { signIn } from "@/api/auth";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const SignInForm = () => {
   const {
