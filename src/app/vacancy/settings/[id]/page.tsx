@@ -285,7 +285,7 @@ const vacancySettings = () => {
             )}
             <Label>Description</Label>
             <textarea
-              className="ring-[1px] ring-gray-300 p-2 rounded-md text-sm w-full"
+              className="ring-[1px] ring-gray-300 p-2 rounded-md text-sm w-full min-h-[100px]"
               {...register("description")}
               placeholder="Description"
             />
