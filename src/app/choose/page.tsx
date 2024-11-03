@@ -1,44 +1,82 @@
 "use client";
 
 import Card from "@/components/Card";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import PocketBase from "pocketbase";
 
 export type BaseCardData = {
-  id: number;
-  full_name: string;
-  img: string;
+  id: string;
+  fullName: string;
+  skills: string;
+  salary: number | string;
   city: string;
+  educationLevels: string;
+  education: string;
+  employmentType: string;
+  email: string;
+  phoneNumber: string;
+  about: string;
+  experience: string;
 };
 
-const Page = () => {
-  const data: BaseCardData[] = [
-    {
-      id: 3,
-      full_name: "Anuar Kapbasov",
-      img: "https://www.ar-cars.cz/cache/images/project/010/10003/1920x1094-exact/default/31/61631-mercedes-benz-cls-63-amg-renntech-500kw-0.jpeg",
-      city: "New York",
-    },
-    {
-      id: 2,
-      full_name: "Ivan Lukov",
-      img: "https://www.ar-cars.cz/cache/images/project/010/10003/1920x1094-exact/default/31/61631-mercedes-benz-cls-63-amg-renntech-500kw-0.jpeg",
-      city: "Barcelona",
-    },
-    {
-      id: 1,
-      full_name: "David Kozhakhmetov",
-      img: "https://www.ar-cars.cz/cache/images/project/010/10003/1920x1094-exact/default/31/61631-mercedes-benz-cls-63-amg-renntech-500kw-0.jpeg",
-      city: "Paris",
-    },
-  ];
+const pb = new PocketBase("https://profinder.pockethost.io");
 
-  const [cards, setCards] = useState<BaseCardData[]>(data);
+const Page = () => {
+  const [cards, setCards] = useState<BaseCardData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const resumeData = async () => {
+      try {
+        const resume = await pb.collection("resume").getFullList({
+          sort: "+created",
+        });
+
+        const result: BaseCardData[] = resume.map((item) => ({
+          id: item.id,
+          fullName: item.fullName,
+          skills: item.skills,
+          salary: item.salary.toString(),
+          city: item.city,
+          educationLevels: item.educationLevels,
+          education: item.education,
+          employmentType: item.employmentType,
+          email: item.email,
+          phoneNumber: item.phoneNumber,
+          about: item.about,
+          experience: item.experience,
+        }));
+
+        const choices = JSON.parse(localStorage.getItem("cardChoose") || "[]");
+        const choicesId = choices.map((choice: BaseCardData) => choice.id);
+
+        const finalCards = result.filter(
+          (card) => !choicesId.includes(card.id)
+        );
+
+        setCards(finalCards);
+      } catch (err) {
+        console.error("Ошибка:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    resumeData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen grid place-content-center">Загрузка...</div>
+    );
+  }
 
   return (
-    <div className="min-h-screen grid place-content-center relative">
-      {cards.map((item) => (
-        <Card key={item.id} {...item} cards={cards} setCards={setCards} />
-      ))}
+    <div className="relative w-screen min-h-screen justify-center items-center">
+      <div className="relative justify-center items-center w-full  h-screen">
+        {cards.map((item) => (
+          <Card key={item.id} {...item} cards={cards} setCards={setCards} />
+        ))}
+      </div>
     </div>
   );
 };
