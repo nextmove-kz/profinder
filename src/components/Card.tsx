@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { motion, useTransform, useMotionValue } from "framer-motion";
 import { BaseCardData } from "../app/choose/page";
@@ -7,7 +8,22 @@ type CardProps = BaseCardData & {
   setCards: React.Dispatch<React.SetStateAction<BaseCardData[]>>;
 };
 
-const Card = ({ id, full_name, img, city, cards, setCards }: CardProps) => {
+const Card = ({
+  id,
+  fullName,
+  skills,
+  salary,
+  city,
+  educationLevels,
+  education,
+  employmentType,
+  email,
+  phoneNumber,
+  about,
+  experience,
+  cards,
+  setCards,
+}: CardProps) => {
   const x = useMotionValue(0);
 
   const handleDragEnd = (event: any, info: any) => {
@@ -15,19 +31,19 @@ const Card = ({ id, full_name, img, city, cards, setCards }: CardProps) => {
     const dragDistance = Math.abs(info.offset.x);
 
     if (dragDistance > 50) {
-      setCards((prevCards: BaseCardData[]) =>
-        prevCards.filter((card: BaseCardData) => card.id !== id)
-      );
+      setCards((prevCards) => prevCards.filter((card) => card.id !== id));
+
+      const cardChoice = { id, fullName, city, direction: dragDirection };
+      const choices = JSON.parse(localStorage.getItem("cardChoose") || "[]");
+      choices.push(cardChoice);
+      localStorage.setItem("cardChoose", JSON.stringify(choices));
 
       if (dragDirection === "right") {
-        console.log(
-          "RIGHT:",
-          JSON.stringify({ id, full_name, img, city }, null, 2)
-        );
+        console.log("LIKE:", JSON.stringify({ id, fullName, city }, null, 2));
       } else {
         console.log(
-          "LEFT:",
-          JSON.stringify({ id, full_name, img, city }, null, 2)
+          "DISLIKE:",
+          JSON.stringify({ id, fullName, city }, null, 2)
         );
       }
     }
@@ -44,19 +60,20 @@ const Card = ({ id, full_name, img, city, cards, setCards }: CardProps) => {
   const isFront = id === cards[cards.length - 1]?.id;
 
   const rotate = useTransform(() => {
-    const offset = isFront ? 0 : id % 2 ? 3 : -3;
+    const offset = isFront ? 0 : Number(id) % 2 ? 3 : -3;
     return `${rotateRaw.get() + offset}deg`;
   });
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="w-full flex justify-center items-center">
       <motion.div
         drag="x"
-        className="w-[30%] h-[60%] bg-white origin-bottom hover:cursor-grab active:cursor-grabbing rounded-xl p-5 flex flex-col gap-1 border border-black absolute"
+        className="w-[30%] h-[40%] bg-white origin-bottom hover:cursor-grab active:cursor-grabbing rounded-xl p-5 flex flex-col gap-2 border border-black absolute top-1/4"
         style={{
+          gridRow: 1,
+          gridColumn: 1,
           x,
           opacity,
-          // color,
           rotate,
           background: color,
           transition: "0.125s transform",
@@ -68,13 +85,26 @@ const Card = ({ id, full_name, img, city, cards, setCards }: CardProps) => {
         dragConstraints={{ left: 0, right: 0 }}
         onDragEnd={handleDragEnd}
       >
-        <img
-          src={img}
-          alt={full_name}
-          className="w-full h-36 object-cover rounded-lg"
+        <div className="flex items-center justify-center gap-3">
+          <h1 className="font-bold text-2xl">{fullName}</h1>
+          <p className="text-slate-500">{city}</p>
+        </div>
+        <p
+          className="text-lg font-bold"
+          dangerouslySetInnerHTML={{ __html: about }}
         />
-        <h1 className="font-bold">{full_name}</h1>
-        <p>{city}</p>
+        <p className="text-sm">
+          Phone: <span className="text-sm text-slate-500">{phoneNumber}</span>
+        </p>
+        <p className="text-gray-800 text-sm">Навыки: {skills}</p>
+        <p className="text-sm text-gray-800">Зарплата: {salary}</p>
+        <p className="text-sm flex gap-1">
+          Опыт работы:
+          <p
+            className="text-sm"
+            dangerouslySetInnerHTML={{ __html: experience }}
+          />
+        </p>
       </motion.div>
     </div>
   );
