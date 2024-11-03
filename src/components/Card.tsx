@@ -2,6 +2,8 @@
 import React from "react";
 import { motion, useTransform, useMotionValue } from "framer-motion";
 import { BaseCardData } from "../app/choose/page";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 type CardProps = BaseCardData & {
   cards: BaseCardData[];
@@ -105,6 +107,11 @@ const Card = ({
             dangerouslySetInnerHTML={{ __html: experience }}
           />
         </p>
+        <Link href={`/resume/${id}`} className="mt-auto">
+          <Button className="mt-auto rounded-b-xl w-full">
+            Перейти к резюме
+          </Button>
+        </Link>
       </motion.div>
     </div>
   );
