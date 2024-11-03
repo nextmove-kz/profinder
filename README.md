@@ -5,6 +5,6 @@
 - NextJS
 - Pocketbase
 - shadcn/ui
-- Vercel / Fly.io
+- Netlify
 - React Hook Form
 - Heroicons
